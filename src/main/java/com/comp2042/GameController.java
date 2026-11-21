@@ -14,6 +14,10 @@ import java.io.File;
 import java.util.Random;
 
 public class GameController {
+    enum CoinKind {
+        STANDARD, GOLD, RAINBOW, BLUE, SILVER
+    }
+
     private Snake snek;
     private Coin coin;
     private GameView gameView;
@@ -123,14 +127,21 @@ public class GameController {
     }
 
     private boolean valKey(KeyCode key) {
-        if (!key.isArrowKey()) return false;
-        else {
-            if (key.equals(KeyCode.LEFT)) if (!this.key.equals(KeyCode.RIGHT)) return true;
-            if (key.equals(KeyCode.RIGHT)) if (!this.key.equals(KeyCode.LEFT)) return true;
-            if (key.equals(KeyCode.DOWN)) if (!this.key.equals(KeyCode.DOWN)) return true;
-            if (key.equals(KeyCode.UP)) return !this.key.equals(KeyCode.DOWN);
+        return isValidDirectionChange(this.key, key);
+    }
+
+    static boolean isValidDirectionChange(KeyCode currentDirection, KeyCode candidateDirection) {
+        if (!candidateDirection.isArrowKey()) {
             return false;
         }
+
+        return switch (candidateDirection) {
+            case LEFT -> currentDirection != KeyCode.RIGHT;
+            case RIGHT -> currentDirection != KeyCode.LEFT;
+            case UP -> currentDirection != KeyCode.DOWN;
+            case DOWN -> currentDirection != KeyCode.UP;
+            default -> false;
+        };
     }
 
     private void reset() {
@@ -175,20 +186,30 @@ public class GameController {
     private void newCoin() {
         if (game.isPowerUp()) {
             Random rnd = new Random();
-            int ran = rnd.nextInt(12);
-            if (ran == 1) {
-                coin = new GoldCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else if (ran == 1) {
-                coin = new RainbowCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else if (ran == 3) {
-                coin = new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else if (ran == 4 && obstacle.getObstacles().size() == 0) {
-                coin = new SilverCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else {
-                coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
-            }
+            CoinKind coinKind = coinKindForRoll(rnd.nextInt(12), obstacle.getObstacles().isEmpty());
+            coin = createCoin(coinKind);
         } else {
             coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
         }
+    }
+
+    static CoinKind coinKindForRoll(int roll, boolean hasNoObstacles) {
+        return switch (roll) {
+            case 1 -> CoinKind.GOLD;
+            case 2 -> CoinKind.RAINBOW;
+            case 3 -> CoinKind.BLUE;
+            case 4 -> hasNoObstacles ? CoinKind.SILVER : CoinKind.STANDARD;
+            default -> CoinKind.STANDARD;
+        };
+    }
+
+    private Coin createCoin(CoinKind coinKind) {
+        return switch (coinKind) {
+            case GOLD -> new GoldCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case RAINBOW -> new RainbowCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case BLUE -> new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case SILVER -> new SilverCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case STANDARD -> new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
+        };
     }
 }
