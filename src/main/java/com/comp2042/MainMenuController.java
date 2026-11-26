@@ -7,11 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class MainMenuController {
-
-    private static final int X_VALUE = 20;
-    private static final int Y_VALUE = 20;
-    private static final boolean POWER_UP = true;
-    private static final char DIFFICULTY = 'N';
+    private static final GameConfig DEFAULT_GAME_CONFIG = GameConfig.defaultConfig();
 
     private Scene gameScene;
 
@@ -21,14 +17,19 @@ public class MainMenuController {
         viewManager.initGameStage();
 
         Stage gameStage = viewManager.getGameStage();
-        launchSnake(gameStage);
+        launchSnake(gameStage, DEFAULT_GAME_CONFIG);
         gameStage.setScene(gameScene);
         viewManager.getPrimaryStage().close();
         gameStage.show();
     }
 
-    private void launchSnake(Stage gameStage) {
-        Game game = new Game(X_VALUE, Y_VALUE, POWER_UP, DIFFICULTY);
+    private void launchSnake(Stage gameStage, GameConfig gameConfig) {
+        Game game = new Game(
+                gameConfig.getGridWidth(),
+                gameConfig.getGridHeight(),
+                gameConfig.isPowerUpsEnabled(),
+                gameConfig.getDifficulty()
+        );
         Obstacle obstacle = new Obstacle(game.getWidth(), game.getHeight());
         Snake snek = new Snake(game.getWidth(), game.getHeight(), game.isNoBorder(), obstacle);
         Coin coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
@@ -51,13 +52,5 @@ public class MainMenuController {
 
     public ViewManager getViewManager() {
         return viewManager;
-    }
-
-    public static int getxValue() {
-        return X_VALUE;
-    }
-
-    public static int getyValue() {
-        return Y_VALUE;
     }
 }

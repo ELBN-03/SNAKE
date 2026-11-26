@@ -30,10 +30,11 @@ public class GameView {
     private double initY;
     private double fullScale = 1;
     private boolean fullsize = false;
-    private int[][] turnArray = new int[MainMenuController.getxValue()][MainMenuController.getyValue()];
+    private final int[][] turnArray;
 
     public GameView(Game game) {
         this.game = game;
+        this.turnArray = new int[game.getWidth()][game.getHeight()];
     }
 
     public void makeScene(Scene scene, Snake snek, Coin coin) {
