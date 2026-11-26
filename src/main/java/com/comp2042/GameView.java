@@ -6,6 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,6 +32,10 @@ public class GameView {
     private double fullScale = 1;
     private boolean fullsize = false;
     private final int[][] turnArray;
+    private final ImageView snakeHeadImage = new ImageView(new Image("resources/views/res/snakehead.png"));
+    private final ImageView snakeBodyImage = new ImageView(new Image("resources/views/res/snakebody.png"));
+    private final ImageView snakeTurnImage = new ImageView(new Image("resources/views/res/snaketurnleft.png"));
+    private final ImageView snakeTailImage = new ImageView(new Image("resources/views/res/snaketail.png"));
 
     public GameView(Game game) {
         this.game = game;
@@ -126,20 +131,20 @@ public class GameView {
     }
 
     private void drawHead(Snake snek) {
-        snek.getImageViewHead().setRotate(snek.getSnakeDir());
+        snakeHeadImage.setRotate(snek.getSnakeDir());
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
-        Image rotatedImage = snek.getImageViewHead().snapshot(params, null);
+        Image rotatedImage = snakeHeadImage.snapshot(params, null);
         gc.drawImage(rotatedImage, (snek.getHead().x * game.getMultiplier()) * fullScale, (snek.getHead().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale * fullScale, game.getMultiplier() * fullScale * fullScale);
     }
 
     private void drawBody(Snake snek, Point point, int index) {
         Image rotatedImage;
         if (snek.getBody().size() <= 1) {
-            snek.getImageViewTail().setRotate(snek.getSnakeDir());
+            snakeTailImage.setRotate(snek.getSnakeDir());
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
-            rotatedImage = snek.getImageViewTail().snapshot(params, null);
+            rotatedImage = snakeTailImage.snapshot(params, null);
         } else if (index == 0) {
             int rotateTail;
             if (snek.getBody().get(1).getX() == snek.getBody().get(0).getX() && snek.getBody().get(1).getY() == snek.getBody().get(0).getY() - 1) {
@@ -151,20 +156,20 @@ public class GameView {
             } else {
                 rotateTail = 90;
             }
-            snek.getImageViewTail().setRotate(rotateTail);
+            snakeTailImage.setRotate(rotateTail);
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
-            rotatedImage = snek.getImageViewTail().snapshot(params, null);
+            rotatedImage = snakeTailImage.snapshot(params, null);
         } else if (index > 0 && (turnArray[(int) snek.getBody().get(index).getX()][(int) snek.getBody().get(index).getY()] != 0)) {
-            snek.getImageViewTurn().setRotate(90 * turnArray[(int) snek.getBody().get(index).getX()][(int) snek.getBody().get(index).getY()]);
+            snakeTurnImage.setRotate(90 * turnArray[(int) snek.getBody().get(index).getX()][(int) snek.getBody().get(index).getY()]);
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
-            rotatedImage = snek.getImageViewTurn().snapshot(params, null);
+            rotatedImage = snakeTurnImage.snapshot(params, null);
         } else {
-            snek.getImageViewBody().setRotate(snek.getBodyDir(index));
+            snakeBodyImage.setRotate(snek.getBodyDir(index));
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
-            rotatedImage = snek.getImageViewBody().snapshot(params, null);
+            rotatedImage = snakeBodyImage.snapshot(params, null);
         }
 
         if (turnArray[(int) snek.getBody().get(0).getX()][(int) snek.getBody().get(0).getY()] != 0) {
