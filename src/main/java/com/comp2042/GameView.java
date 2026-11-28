@@ -36,6 +36,11 @@ public class GameView {
     private final ImageView snakeBodyImage = new ImageView(new Image("resources/views/res/snakebody.png"));
     private final ImageView snakeTurnImage = new ImageView(new Image("resources/views/res/snaketurnleft.png"));
     private final ImageView snakeTailImage = new ImageView(new Image("resources/views/res/snaketail.png"));
+    private final Image regularCoinImage = new Image("resources/views/res/redcoin.png");
+    private final Image blueCoinImage = new Image("resources/views/res/bluecoin.png");
+    private final Image goldCoinImage = new Image("resources/views/res/goldcoin.png");
+    private final Image rainbowCoinImage = new Image("resources/views/res/rainbowcoin.png");
+    private final Image silverCoinImage = new Image("resources/views/res/silvercoin.png");
 
     public GameView(Game game) {
         this.game = game;
@@ -99,7 +104,7 @@ public class GameView {
         gc.setFill(game.getColor());
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        gc.drawImage(coin.getImage(), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
+        gc.drawImage(getCoinImage(coin), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
 
         int bodyIndex = 0;
         for (Point point : snek.getBody()) {
@@ -119,7 +124,7 @@ public class GameView {
         gc.setFill(game.getColor());
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        gc.drawImage(coin.getImage(), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
+        gc.drawImage(getCoinImage(coin), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
 
         int bodyIndex = 0;
         for (Point point : snek.getBody()) {
@@ -136,6 +141,22 @@ public class GameView {
         params.setFill(Color.TRANSPARENT);
         Image rotatedImage = snakeHeadImage.snapshot(params, null);
         gc.drawImage(rotatedImage, (snek.getHead().x * game.getMultiplier()) * fullScale, (snek.getHead().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale * fullScale, game.getMultiplier() * fullScale * fullScale);
+    }
+
+    private Image getCoinImage(Coin coin) {
+        if (coin instanceof BlueCoin) {
+            return blueCoinImage;
+        }
+        if (coin instanceof GoldCoin) {
+            return goldCoinImage;
+        }
+        if (coin instanceof RainbowCoin) {
+            return rainbowCoinImage;
+        }
+        if (coin instanceof SilverCoin) {
+            return silverCoinImage;
+        }
+        return regularCoinImage;
     }
 
     private void drawBody(Snake snek, Point point, int index) {
