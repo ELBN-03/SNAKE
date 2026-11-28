@@ -26,8 +26,8 @@ public class GameController {
     private String coinSoundPath = "resources/views/res/coinSound.wav";
     private Obstacle obstacle;
 
-    public static KeyCode key = KeyCode.LEFT;
-    public static KeyCode lastKey = KeyCode.LEFT;
+    private KeyCode currentDirection = KeyCode.LEFT;
+    private KeyCode previousDirection = KeyCode.LEFT;
     private boolean keyPressed = false;
 
     private int legacyScoreMultiplier = 2;
@@ -54,13 +54,13 @@ public class GameController {
             return;
         } else {
 
-            if (key.equals(KeyCode.LEFT)) {
+            if (currentDirection.equals(KeyCode.LEFT)) {
                 snek.move('L');
-            } else if (key.equals(KeyCode.RIGHT)) {
+            } else if (currentDirection.equals(KeyCode.RIGHT)) {
                 snek.move('R');
-            } else if (key.equals(KeyCode.UP)) {
+            } else if (currentDirection.equals(KeyCode.UP)) {
                 snek.move('U');
-            } else if (key.equals(KeyCode.DOWN)) {
+            } else if (currentDirection.equals(KeyCode.DOWN)) {
                 snek.move('D');
             }
 
@@ -90,10 +90,10 @@ public class GameController {
         if (event.getCode().isArrowKey()) animation.play();
 
         if (valKey(event.getCode()) && !keyPressed) {
-            lastKey = key;
-            key = event.getCode();
+            previousDirection = currentDirection;
+            currentDirection = event.getCode();
             keyPressed = true;
-            gameView.turnDir(snek);
+            gameView.turnDir(snek, previousDirection, currentDirection);
         }
 
         if (event.getCode().equals(KeyCode.P)) {
@@ -127,7 +127,7 @@ public class GameController {
     }
 
     private boolean valKey(KeyCode key) {
-        return isValidDirectionChange(this.key, key);
+        return isValidDirectionChange(currentDirection, key);
     }
 
     static boolean isValidDirectionChange(KeyCode currentDirection, KeyCode candidateDirection) {
@@ -155,7 +155,8 @@ public class GameController {
         int unusedObstacleCount = new Random().nextInt(game.getWidth() * game.getHeight() / 20) + 3;
 
         animation.setRate(game.getSpeed());
-        key = KeyCode.LEFT;
+        currentDirection = KeyCode.LEFT;
+        previousDirection = KeyCode.LEFT;
         keyPressed = false;
         game.resetScore();
         obstacle.reset();
