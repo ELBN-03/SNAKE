@@ -25,6 +25,14 @@ The test suite covers game configuration, movement/input rules, border behavior,
 .\mvnw.cmd javafx:run
 ```
 
+## Generate Javadoc
+
+```powershell
+.\mvnw.cmd javadoc:javadoc
+```
+
+The generated HTML is written to `target/reports/apidocs` and can be copied to the required submission folder as `Javadoc`.
+
 ## Current design
 
 - `GameConfig` owns validated session settings.
