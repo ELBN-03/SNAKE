@@ -10,17 +10,18 @@ import java.io.IOException;
 
 public class ViewManager {
 
-    private Stage primaryStage = new Stage();
+    private final Stage primaryStage;
     private AnchorPane root;
 
     private Stage gameStage;
 
-    private Image snakeLogo = new Image("resources/views/res/SnakeLogoWhite.png");
+    private final Image snakeLogo = new Image("resources/views/res/SnakeLogoWhite.png");
 
-    public ViewManager() {
+    public ViewManager(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
-    public void initalizeMainMenu() {
+    public void initializeMainMenu() {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/resources/views/MainMenu.fxml"));
